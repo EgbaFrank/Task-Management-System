@@ -8,11 +8,18 @@ from datetime import datetime
 
 class BaseModel:
     """Represents a Base Model with basic attributes and methods"""
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         """Initializes a BaseModel instance, with an ID and timestamp"""
-        self.id = str(uuid.uuid4())
-        self.created_at = datetime.now()
-        self.updated_at = datetime.now()
+        self.id = kwargs.get("id", str(uuid.uuid4()))
+        self.created_at = kwargs.get("created_at", datetime.now())
+        self.updated_at = kwargs.get("updated_at", self.created_at)
+
+        fmt_str = "%Y-%m-%dT%H:%M:%S.%f"
+        if "created_at" in kwargs:
+            self.created_at = datetime.strptime(kwargs["created_at"], fmt_str)
+
+        if "updated_at" in kwargs:
+            self.updated_at = datetime.strptime(kwargs["updated_at"], fmt_str)
 
     def __str__(self):
         """Returns class string format when print called"""

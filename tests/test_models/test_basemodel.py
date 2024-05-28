@@ -11,6 +11,7 @@ class Test_BaseModel(unittest.TestCase):
     """Test cases for the BaseModel"""
 
     def setUp(self):
+        """Set up test environment"""
         self.base1 = BaseModel()
         self.base2 = BaseModel()
 
@@ -36,9 +37,28 @@ class Test_BaseModel(unittest.TestCase):
         self.assertIsInstance(self.base1.created_at, datetime)
         self.assertIsInstance(self.base2.updated_at, datetime)
 
-        # Tests error cases
-        with self.assertRaises(TypeError):
-            base1 = BaseModel("Test")
+    def test_update(self):
+        # Test cases for instance re-creation
+        dict_val = self.base2.to_dict()
+        self.base3 = BaseModel(**dict_val)
+
+        self.assertIsNotNone(self.base3.id)
+        self.assertIsNotNone(self.base3.created_at)
+        self.assertIsNotNone(self.base3.updated_at)
+        self.assertNotEqual(self.base3.__class__, "BaseModel")
+        self.assertIsInstance(self.base3.created_at, datetime)
+        self.assertIsInstance(self.base3.updated_at, datetime)
+
+    def test_empty_dict(self):
+        # Test case for empty dict
+        self.base4 = BaseModel(**{})
+
+        self.assertIsNotNone(self.base4.id)
+        self.assertIsNotNone(self.base4.created_at)
+        self.assertIsNotNone(self.base4.updated_at)
+        self.assertNotEqual(self.base4.__class__, "BaseModel")
+        self.assertIsInstance(self.base4.created_at, datetime)
+        self.assertIsInstance(self.base4.updated_at, datetime)
 
     def test_str(self):
         """Test the str speacial method"""
